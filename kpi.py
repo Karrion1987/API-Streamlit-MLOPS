@@ -159,7 +159,7 @@ def cumplimiento():
     st.write(resultado)
 
 # Ejecutar la aplicación
-if _name_ == "_main_":
+if __name__ == "_main_":
     # Aquí van las credenciales proporcionadas
     MYSQL_HOST = 'b66ffp1ohipmheztv2qe-mysql.services.clever-cloud.com'
     MYSQL_USER = 'uswedtxp1ee0rjl6'
