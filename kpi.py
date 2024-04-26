@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
+# Función para reemplazar puntos por comas en números ingresados por el usuario
+def custom_number_input(label, value=0.0, step=0.1):
+    input_html = f'<input type="number" value="{value}" step="{step}" onchange="if(this.value.includes(\'.\')) this.value = this.value.replace(\'.\', \',\');" style="width: 100%;">'
+    return st.markdown(f"<label>{label}{input_html}</label>", unsafe_allow_html=True)
+
 # Función para registrar el uso de vehículos eléctricos
 def usoelectrico(Fecha: datetime, millas_electrico_turno_1: float,
                   millas_electrico_turno_2: float, millas_electrico_turno_3: float,
@@ -68,12 +73,12 @@ def cumplimientoKPI(Fecha_analisis : datetime):
 def registro():
     st.title('Registro de Uso de Vehículos Eléctricos')
     Fecha = st.date_input('Fecha:', value=datetime.today())
-    millas_electrico_turno_1 = st.number_input('Millas Eléc. Turno 1:', value=0.0, step=0.1)
-    millas_electrico_turno_2 = st.number_input('Millas Eléc. Turno 2:', value=0.0, step=0.1)
-    millas_electrico_turno_3 = st.number_input('Millas Eléc. Turno 3:', value=0.0, step=0.1)
-    millas_convencionales_turno_1 = st.number_input('Millas Conv. Turno 1:', value=0.0, step=0.1)
-    millas_convencionales_turno_2 = st.number_input('Millas Conv. Turno 2:', value=0.0, step=0.1)
-    millas_convencionales_turno_3 = st.number_input('Millas Conv. Turno 3:', value=0.0, step=0.1)
+    millas_electrico_turno_1 = custom_number_input('Millas Eléc. Turno 1:', value=0.0, step=0.1)
+    millas_electrico_turno_2 = custom_number_input('Millas Eléc. Turno 2:', value=0.0, step=0.1)
+    millas_electrico_turno_3 = custom_number_input('Millas Eléc. Turno 3:', value=0.0, step=0.1)
+    millas_convencionales_turno_1 = custom_number_input('Millas Conv. Turno 1:', value=0.0, step=0.1)
+    millas_convencionales_turno_2 = custom_number_input('Millas Conv. Turno 2:', value=0.0, step=0.1)
+    millas_convencionales_turno_3 = custom_number_input('Millas Conv. Turno 3:', value=0.0, step=0.1)
 
     if st.button('Registrar Uso'):
         usoelectrico(Fecha, millas_electrico_turno_1, millas_electrico_turno_2, millas_electrico_turno_3,
