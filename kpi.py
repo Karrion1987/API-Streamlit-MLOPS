@@ -65,7 +65,6 @@ def cumplimientoKPI(Fecha_analisis : datetime):
         else:
             return f"No se cumplió el objetivo por {diferencia.round(2)}%."
 
-# Interfaz de usuario con Streamlit para la página de registro de uso de vehículos eléctricos
 def registro():
     st.title('Registro de Uso de Vehículos Eléctricos')
     Fecha = st.date_input('Fecha:', value=datetime.today())
@@ -81,10 +80,14 @@ def registro():
                       millas_convencionales_turno_1, millas_convencionales_turno_2, millas_convencionales_turno_3)
         st.success('¡Registro exitoso!')
 
+    # Leer los datos del archivo CSV y ordenar por fecha
+    flotaElectrica = pd.read_csv("data/flotaElectrica.csv")
+    flotaElectrica['Fecha'] = pd.to_datetime(flotaElectrica['Fecha'])
+    flotaElectrica = flotaElectrica.sort_values(by='Fecha', ascending=False).head(3)
+
     # Mostrar los últimos 3 registros
     st.subheader('Últimos 3 Registros')
-    ultimos_registros = pd.read_csv("data/flotaElectrica.csv").tail(3)
-    st.write(ultimos_registros)
+    st.write(flotaElectrica)
 
 # Interfaz de usuario con Streamlit para la página de cumplimiento KPI
 def cumplimiento():
