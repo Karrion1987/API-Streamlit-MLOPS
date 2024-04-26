@@ -7,10 +7,6 @@ def custom_number_input(label, value=0.0, step=0.1):
     input_html = f'<input type="number" value="{value}" step="{step}" onchange="if(this.value.includes(\'.\')) this.value = this.value.replace(\'.\', \',\');" style="width: 100%;">'
     return st.markdown(f"<label>{label}{input_html}</label>", unsafe_allow_html=True)
 
-# Función para reemplazar puntos por comas en números decimales
-def format_decimal(number):
-    return f"{number:.2f}".replace(".", ",")
-
 # Función para registrar el uso de vehículos eléctricos
 def usoelectrico(Fecha: datetime, millas_electrico_turno_1: float,
                   millas_electrico_turno_2: float, millas_electrico_turno_3: float,
@@ -46,9 +42,33 @@ def usoelectrico(Fecha: datetime, millas_electrico_turno_1: float,
             kpi_porcentaje_participacion_flota_electrica_diario]
         df_temporal = pd.DataFrame([valores], columns=datos_diarios.columns)
         flotaElectrica = pd.concat([flotaElectrica, df_temporal], ignore_index=True)
-        flotaElectrica.to_csv("data/flotaElectrica.csv", index=False, float_format='%.2f')
+        flotaElectrica.to_csv("data/flotaElectrica.csv", index=False)
 
     return flotaElectrica
+
+def cumplimientoKPI(Fecha_analisis : datetime):
+    # Convertir la fecha de análisis a formato de cadena
+    fecha_analisis_str = Fecha_analisis.strftime('%Y-%m-%d')
+
+    # importamos la tabla de la función
+    flotaElectrica = pd.read_csv("data/flotaElectrica.csv")
+    
+    if fecha_analisis_str not in flotaElectrica["Fecha"].values:
+        return "Esta fecha no está registrada."
+    else:
+        porcentaje_actual = flotaElectrica["% Participación Flota Eléctrica"][flotaElectrica["Fecha"] == fecha_analisis_str].values[0]
+        indice = flotaElectrica[flotaElectrica["Fecha"] == fecha_analisis_str].index[0]
+        
+        if indice == 0:
+            return "No hay un porcentaje anterior registrado."
+        
+        porcentaje_anterior = flotaElectrica["% Participación Flota Eléctrica"][indice - 1]
+        diferencia = porcentaje_actual - porcentaje_anterior
+        
+        if diferencia >= 0:
+            return f"Se cumplió el objetivo por {diferencia.round(2)}%."
+        else:
+            return f"No se cumplió el objetivo por {diferencia.round(2)}%."
 
 def registro():
     st.title('Registro de Uso de Vehículos Eléctricos')
